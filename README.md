@@ -1,15 +1,15 @@
 # CarrNexa Python CLI Template
 
-A starter repository for CarrNexa Python CLI projects. It uses a namespaced `src` layout and includes the default tooling for this project family: `uv`, Typer, Ruff, pytest, and pre-commit.
+This is a starter repository for CarrNexa Python CLI projects. It uses a namespaced `src` layout and includes the default tooling for this project family: `uv`, Typer, Ruff, pytest, and pre-commit.
 
 Use this repository as the base for a new CLI project, then replace the example package, command, and metadata with the project-specific implementation.
 
 ## Prerequisites
 
-- **Python**: [Tested on 3.12.10](https://www.python.org/downloads/)
-- **Git**: [Tested on 2.55.0](https://git-scm.com/install/)
-- **PowerShell 7**: [Tested on 7.6.4](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6)
-- **uv**: [Tested on 0.11.24](https://docs.astral.sh/uv/getting-started/installation/)
+- **Python**: [Tested with 3.12.10](https://www.python.org/downloads/)
+- **Git**: [Tested with 2.55.0](https://git-scm.com/install/)
+- **PowerShell 7**: [Tested with 7.6.4](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6)
+- **uv**: [Tested with 0.11.24](https://docs.astral.sh/uv/getting-started/installation/)
 
 ## Quickstart
 
