@@ -1,8 +1,8 @@
 # CarrNexa Python CLI Template
 
-This is a starter repository for CarrNexa Python CLI projects. It uses a namespaced `src` layout and includes the default tooling for this project family: `uv`, Typer, Ruff, pytest, and pre-commit.
+This is the Python CLI template for CarrNexa projects.
 
-Use this repository as the base for a new CLI project, then replace the example package, command, and metadata with the project-specific implementation.
+New Python-based command-line interfaces (CLIs) should be created from this template. Starting here keeps the project shape and default settings consistent. The rest of this README covers local setup, day-to-day commands, and related project documentation.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Sync dependencies:
 uv sync
 ```
 
-From there, use `uv run` for the default workflow. It keeps the commands the same on Windows, Linux, and macOS, and avoids shell-specific activation steps in the common path.
+Use `uv run` for normal local commands. This keeps the commands the same on Windows, Linux, and macOS without requiring shell-specific activation.
 
 ```bash
 uv run app --help
