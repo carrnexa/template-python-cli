@@ -1,15 +1,17 @@
-# CarrNexa Python CLI Template
+# Template | Python CLI
 
-This is the Python CLI template for CarrNexa projects.
+This repository acts as the main template for creating Python CLIs within CarrNexa. It consolidates many of the best practices and design decisions that have been established and refined over time.
 
-New Python-based command-line interfaces (CLIs) should be created from this template. Starting here keeps the project shape and default settings consistent. The rest of this README covers local setup, day-to-day commands, and related project documentation.
+## Required Software
 
-## Prerequisites
+The following software and their tested versions are required to work with this template:
 
-- **Python**: [Tested with 3.12.10](https://www.python.org/downloads/)
-- **Git**: [Tested with 2.55.0](https://git-scm.com/install/)
-- **PowerShell 7**: [Tested with 7.6.4](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6)
-- **uv**: [Tested with 0.11.24](https://docs.astral.sh/uv/getting-started/installation/)
+| Name | Tested Versions |
+| - | :-: |
+| [Python](https://www.python.org/downloads/) | 3.12.10 |
+| [Git](https://git-scm.com/install/) | 2.55.0 |
+| [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6) | v7.6.4 |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.11.24 |
 
 ## Quickstart
 
@@ -26,7 +28,7 @@ Sync dependencies:
 uv sync
 ```
 
-Use `uv run` for normal local commands. This keeps the commands the same on Windows, Linux, and macOS without requiring shell-specific activation.
+Then use `uv run` to execute commands. This keeps the commands the same on Windows, Linux, and macOS without requiring shell-specific activation.
 
 ```bash
 uv run app --help
@@ -39,27 +41,22 @@ Direct module execution also works:
 uv run python -m carrnexa.app_name --help
 ```
 
-## Optional: Activate the Virtual Environment
+## Using a Virtual Environment
 
-If you prefer to work inside the virtual environment instead of prefixing commands with `uv run`, use the command that matches your shell.
+If you don't want to prefix every command with `uv run`, you can activate a Python virtual environment with the corresponding command and work from that instead.
 
-Unix shells:
+| Environment | Activation Command |
+| - | - |
+| Linux/macOS | `source .venv/bin/activate` |
+| PowerShell | `.\.venv\Scripts\Activate.ps1` |
+| Command Prompt | `.\.venv\Scripts\activate.bat` |
 
-```bash
-source .venv/bin/activate
-```
-
-Windows PowerShell 7:
-
-```pwsh
-.\.venv\Scripts\Activate.ps1
-```
-
-Once the environment is active, the commands become:
+Once active, the previously mentioned commands become:
 
 ```bash
 app --help
 app example
+python -m carrnexa.app_name --help
 ```
 
 ## Git Hooks
@@ -86,7 +83,9 @@ Until a setup script is available, update these places manually:
 
 The bundled `example` command is only there to verify the CLI wiring before you replace it with project-specific commands.
 
-## Reference
+## References
+
+The following documents provide more detailed information:
 
 - [Release Process](docs/release-process.md)
 - [Changelog Fragments](docs/changelog-fragments.md)
