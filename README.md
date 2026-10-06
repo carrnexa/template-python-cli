@@ -75,7 +75,7 @@ cp hooks/post-commit .git/hooks/post-commit
 
 After creating a project from this template, replace the placeholder names and metadata with the new project values.
 
-Until the setup script is available, update these places manually:
+Until a setup script is available, update these places manually:
 
 - `project.name` in `pyproject.toml`
 - `description` and repository URLs in `pyproject.toml`
