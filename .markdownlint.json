@@ -1,7 +1,16 @@
 {
+  "MD003": {"style": "atx"},
+  "MD004": {"style": "dash"},
   "MD007": {"indent": 4},
   "MD013": false,
   "MD024": {"siblings_only": true},
-  "MD033": {"table_allowed_elements": ["br"]},
-  "MD041": false
+  "MD029": {"style": "ordered"},
+  "MD033": {"allowed_elements": ["img"], "table_allowed_elements": ["br"]},
+  "MD035": {"style": "---"},
+  "MD041": false,
+  "MD048": {"style": "backtick"},
+  "MD049": {"style": "asterisk"},
+  "MD050": {"style": "asterisk"},
+  "MD055": {"style": "leading_and_trailing"},
+  "MD060": {"style": "compact"}
 }

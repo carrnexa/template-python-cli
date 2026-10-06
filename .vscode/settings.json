@@ -62,7 +62,7 @@
     "editor.defaultFormatter": "tamasfe.even-better-toml"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
     "editor.unicodeHighlight.ambiguousCharacters": true,
     "editor.unicodeHighlight.invisibleCharacters": true,
     "diffEditor.ignoreTrimWhitespace": false,
