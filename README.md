@@ -1,20 +1,25 @@
 # Template | Python CLI
 
-This is the template repository used for Python command-line interfaces (CLIs) built by CarrNexa.
+This is the template repository used at CarrNexa for Python command-line interface (CLI) projects.
 
 ## Required Software
 
-The following software is required to use this template:
+The following software is required to use this repository:
 
 | Name | Tested Versions |
 | - | :-: |
 | [Python](https://www.python.org/downloads/) | 3.12.10 |
 | [Git](https://git-scm.com/install/) | 2.55.0 |
-| [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6) | 7.6.4 |
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.11.24 |
 
+If you are using Windows, it is also recommended (and may be required) to have PowerShell 7 installed for proper script execution.
+
+| Name | Tested Versions |
+| - | :-: |
+| [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6) | 7.6.4 |
+
 > [!NOTE]
-> The software versions listed in the table above are known to work with this repository. Other versions may work as well but it is not guaranteed.
+> The software versions listed in the tables above are known to work with this repository. Other versions may work as well but it is not guaranteed.
 
 ## Quickstart
 
@@ -64,7 +69,7 @@ app example -h
 
 ## Git Hooks
 
-This template uses Git hooks to run certain checks before code is committed and pushed. If you are contributing to this project, you need to set up the hooks locally by running the following commands:
+This repository uses Git hooks to run a series of checks before code is committed and pushed. If you are contributing to this project, you will need to set up the hooks locally by running the following commands:
 
 ```bash
 uv run pre-commit install
@@ -73,26 +78,26 @@ cp hooks/post-commit .git/hooks/post-commit
 
 ## Starting a New Project
 
-After generating a new project from this template, you will need to update all package-specific values to avoid conflicts with the original template repository.
+After generating a new project from this template, make sure to update all package-specific values to avoid conflicts with the original template repository.
 
 At minimum, this includes:
 
-- [src/carrnexa/app_name/](src/carrnexa/app_name/)
 - [pyproject.toml](pyproject.toml)
     - `[project]`
         - `name`
     - `[project.urls]`
     - `[tool.uv.build-backend]`
     - `[project.scripts]`
+- [src/carrnexa/app_name/](src/carrnexa/app_name/)
 
 > [!TIP]
-> The `src/carrnexa/app_name/` directory and its parent should be renamed to match the new package name and namespace respectively. Additionally, any imports that reference these directories will also need to be updated to match.
+> The `src/carrnexa/app_name/` directory should match the new project name once the namespace prefix is removed and all hyphens are replaced with underscores.
 
-Once everything has been updated, make sure to re-run the `uv sync` command to ensure all dependencies and package information are correctly synchronized.
+Once the updates are done, run the `uv sync` command to align all dependencies and package information with the new project configuration.
 
 ## References
 
-The following documents provide additional information that may be useful when working with this project:
+The following documents provide additional information that may be useful when working on this project:
 
 - [Release Process](docs/release-process.md)
 - [Changelog Fragments](docs/changelog-fragments.md)
