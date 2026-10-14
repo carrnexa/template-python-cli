@@ -55,7 +55,7 @@ If you don't want to prefix every command with `uv run`, you can activate a Pyth
 | Shell | Activation Command |
 | - | - |
 | Bash/Zsh (Linux/macOS) | `source .venv/bin/activate` |
-| PowerShell | `.\.venv\Scripts\Activate.ps1` |
+| PowerShell | `.\.venv\Scripts\activate.ps1` |
 | Command Prompt | `.\.venv\Scripts\activate.bat` |
 
 Once activated, the quickstart commands simply become:
