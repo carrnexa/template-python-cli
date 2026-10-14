@@ -12,7 +12,7 @@ The following software is required to use this repository:
 | [Git](https://git-scm.com/install/) | 2.55.0 |
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.11.24 |
 
-If you are using Windows, it is also recommended (and may be required) to have PowerShell 7 installed for proper script execution.
+When on Windows, PowerShell 7 may also be required for proper script execution.
 
 | Name | Tested Versions |
 | - | :-: |
@@ -36,23 +36,21 @@ Sync all dependencies:
 uv sync
 ```
 
-Execute commands using `uv run`. This keeps the commands the same on Windows, Linux, and macOS without requiring shell-specific activation.
+View available commands and their usage with the `-h` flag.
 
 ```bash
+# Project Script Usage (Recommended)
 uv run app -h
 uv run app example -h
-```
 
-Direct module execution also works.
-
-```bash
+# Direct Module Execution
 uv run python -m carrnexa.app_name -h
 uv run python -m carrnexa.app_name example -h
 ```
 
 ## Using a Virtual Environment
 
-If you don't want to prefix every command with `uv run`, you can activate a Python virtual environment instead. To do so, use the activation command from the table below that matches your shell:
+If you don't want to prefix every command with `uv run`, you can activate a Python virtual environment instead. This can be done by running the activation command for your shell as listed in the table below:
 
 | Shell | Activation Command |
 | - | - |
@@ -66,6 +64,9 @@ Once activated, the quickstart commands simply become:
 app -h
 app example -h
 ```
+
+> [!NOTE]
+> Any project related commands shown in a document will be prefixed with `uv run` unless stated otherwise. Doing so ensures compatibility across different operating systems and shell environments.
 
 ## Git Hooks
 
@@ -91,9 +92,9 @@ At minimum, this includes:
 - [src/carrnexa/app_name/](src/carrnexa/app_name/)
 
 > [!TIP]
-> The `src/carrnexa/app_name/` directory should match the new project name once the namespace prefix is removed and all hyphens are replaced with underscores.
+> The `src/carrnexa/app_name/` directory should match the new project name once the namespace prefix is removed and all hyphens are replaced with underscores. For example, if your new project name is `carrnexa-new-project`, the directory should be renamed to `src/carrnexa/new_project/`.
 
-Once the updates are done, run the `uv sync` command to align all dependencies and package information with the new project configuration.
+Once the changes are made, run the `uv sync` command to align all dependencies and package information with the new project configuration.
 
 ## References
 
