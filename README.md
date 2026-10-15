@@ -12,14 +12,14 @@ The following software is required to use this repository:
 | [Git](https://git-scm.com/install/) | 2.55.0 |
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.11.24 |
 
-When on Windows, PowerShell 7 may also be required for proper script execution.
+Windows users may also need to install PowerShell 7 for proper script execution.
 
 | Name | Tested Versions |
 | - | :-: |
 | [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6) | 7.6.4 |
 
 > [!NOTE]
-> The software versions listed in the tables above are known to work with this repository. Other versions may work as well but it is not guaranteed.
+> The software versions listed above are known to work with this repository. Other versions may work as well but it's not guaranteed.
 
 ## Quickstart
 
@@ -36,7 +36,7 @@ Sync all dependencies:
 uv sync
 ```
 
-View available commands and their usage with the `-h` flag.
+View available app commands and their usage:
 
 ```bash
 # Project Script Usage (Recommended)
@@ -50,7 +50,9 @@ uv run python -m carrnexa.app_name example -h
 
 ## Using a Virtual Environment
 
-If you don't want to prefix every command with `uv run`, you can activate a Python virtual environment instead. This can be done by running the activation command for your shell as listed in the table below:
+If you don't want to prefix every package-related command with `uv run`, you can activate a Python virtual environment instead.
+
+Some common shell environments and their corresponding activation commands are listed below:
 
 | Shell | Activation Command |
 | - | - |
@@ -66,7 +68,7 @@ app example -h
 ```
 
 > [!NOTE]
-> Any project related commands shown in a document will be prefixed with `uv run` unless stated otherwise. Doing so ensures compatibility across different operating systems and shell environments.
+> Any environment-specific commands shown in a document will be prefixed with `uv run` unless stated otherwise. Doing so ensures compatibility across different operating systems and shell environments.
 
 ## Git Hooks
 
@@ -94,7 +96,7 @@ At minimum, this includes:
 > [!TIP]
 > The `src/carrnexa/app_name/` directory should match the new project name once the namespace prefix is removed and all hyphens are replaced with underscores. For example, if your new project name is `carrnexa-new-project`, the directory should be renamed to `src/carrnexa/new_project/`.
 
-Once the changes are made, run the `uv sync` command to align all dependencies and package information with the new project configuration.
+Once you have made your changes, make sure to run `uv sync` to align all dependencies and package information with the new project configuration.
 
 ## References
 
