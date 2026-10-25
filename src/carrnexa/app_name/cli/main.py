@@ -7,7 +7,7 @@ from carrnexa.app_name.cli import example
 app = Typer(
     no_args_is_help=True,
     context_settings={"help_option_names": ["-h", "--help"]},
-    help="A Python CLI built by CarrNexa.",
+    help="A Python CLI built at CarrNexa.",
 )
 app.add_typer(example.app, name="example")
 
