@@ -21,26 +21,28 @@ The following software is required to use this repository:
 Generate a new project from this template with one of the following methods:
 
 - **GitHub Web**: Go to [carrnexa/template-python-cli](https://github.com/carrnexa/template-python-cli) on GitHub and click the "Use this template" button in the top right corner.
-- **GitHub CLI**: Utilize the GitHub CLI template feature if you have it installed by running:
+- **GitHub CLI**: Utilize the GitHub CLI template feature by running:
 
     ```bash
     gh repo create <new-repo-name> --template carrnexa/template-python-cli --clone
     ```
 
-- **Bare Clone**: Create an empty github repository first, then use a bare clone of the template repository and push it upstream.
+- **Git Clone**: Create an empty GitHub repository first, then clone the template repository and push it up to your remote.
 
     ```bash
-    git clone --bare git@github.com:carrnexa/template-python-cli.git <new-repo-name>
+    git clone git@github.com:carrnexa/template-python-cli.git <new-repo-name>
     cd <new-repo-name>
-    git push --mirror git@github.com:carrnexa/<new-repo-name>.git
+    git remote set-url origin git@github.com:carrnexa/<new-repo-name>.git
+    git push -u origin main
     ```
 
-- **Direct Download**: Create an empty GitHub repository first, then download the template repository as a ZIP file from GitHub, extract it, and push it upstream.
+- **Direct Download**: Create an empty GitHub repository first, then download the template repository as a ZIP file from GitHub, extract it, and push it up to your remote.
 
     ```bash
     # Assuming the ZIP file has been extracted into the <new-repo-name> directory
     cd <new-repo-name>
     git init
+    git branch -M main
     git remote add origin git@github.com:carrnexa/<new-repo-name>.git
     git add .
     git commit -m "Initial commit from template"
