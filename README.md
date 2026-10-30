@@ -1,25 +1,68 @@
-# CarrNexa Python CLI Template
+# Template | Python CLI
 
-CarrNexa's starting point for Python CLI projects. It keeps the setup lean, uses a namespaced `src` layout, and ships with the tooling we want by default: `uv`, Typer, Ruff, pytest, and pre-commit.
+CarrNexa's template repository for Python CLI projects.
 
-The goal is simple: start from something clean, consistent, and easy to grow instead of rebuilding the same scaffolding for every new project.
+## Required Software
 
-## What This Template Includes
+The following software is required to use this repository:
 
-- A `carrnexa.*` namespace package layout
-- A Typer CLI entrypoint with subcommand organization
-- `uv` for environment management and dependency syncing
-- Ruff, pytest, and pre-commit for day-to-day quality checks
-- A small example command you can keep, replace, or delete once your real CLI takes shape
-- A `CHANGELOG.md` using the Keep a Changelog format
-- A documented release process for CI, release preparation, and tag-based publishing
+| Name | Tested Versions | Notes |
+| - | :-: | - |
+| [Python](https://www.python.org/downloads/) | 3.12.10 | |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.11.24 | |
+| [Git](https://git-scm.com/install/) | 2.55.0 | Only needed if cloning or contributing |
+| [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6) | 7.6.4 | For Windows users only |
 
-## Prerequisites
+> [!NOTE]
+> The software versions listed above are known to work with this repository. Other versions may work as well, but it's not guaranteed.
 
-- **Python**: [Tested on 3.12.10](https://www.python.org/downloads/)
-- **Git**: [Tested on 2.55.0](https://git-scm.com/install/)
-- **PowerShell 7**: [Tested on 7.6.4](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6)
-- **uv**: [Tested on 0.11.24](https://docs.astral.sh/uv/getting-started/installation/)
+## Using This Template
+
+Generate a new project from this template with one of the following methods:
+
+- **GitHub Web**: Go to [carrnexa/template-python-cli](https://github.com/carrnexa/template-python-cli) on GitHub and click the "Use this template" button in the top right corner.
+- **GitHub CLI**: Utilize the GitHub CLI template feature by running:
+
+    ```bash
+    gh repo create <new-repo-name> --template carrnexa/template-python-cli --clone
+    ```
+
+- **Git Clone**: Create an empty GitHub repository first, then clone the template repository and push it up to your remote.
+
+    ```bash
+    git clone git@github.com:carrnexa/template-python-cli.git <new-repo-name>
+    cd <new-repo-name>
+    git remote set-url origin git@github.com:carrnexa/<new-repo-name>.git
+    git push -u origin main
+    ```
+
+- **Direct Download**: Create an empty GitHub repository first, then download the template repository as a ZIP file from GitHub, extract it, and push it up to your remote.
+
+    ```bash
+    # Assuming the ZIP file has been extracted into the <new-repo-name> directory
+    cd <new-repo-name>
+    git init
+    git branch -M main
+    git remote add origin git@github.com:carrnexa/<new-repo-name>.git
+    git add .
+    git commit -m "Initial commit from template"
+    git push -u origin main
+    ```
+
+Once generated, update all package-specific values to avoid conflicts with the original template repository. At minimum, this includes:
+
+- [pyproject.toml](pyproject.toml)
+    - `[project]`
+        - `name`
+    - `[project.urls]`
+    - `[tool.uv.build-backend]`
+    - `[project.scripts]`
+- [src/carrnexa/app_name/](src/carrnexa/app_name/)
+
+> [!TIP]
+> The `src/carrnexa/app_name/` directory should match the new project name once the namespace prefix is removed and all hyphens are replaced with underscores. For example, if your new project name is `carrnexa-new-project`, the directory should be renamed to `src/carrnexa/new_project/`.
+
+After those updates are made, run `uv sync` to align dependencies and package information with the new project configuration; then, remove this section and update any remaining references below.
 
 ## Quickstart
 
@@ -30,78 +73,62 @@ git clone git@github.com:carrnexa/template-python-cli.git
 cd template-python-cli
 ```
 
-Sync dependencies:
+Sync all dependencies:
 
 ```bash
 uv sync
 ```
 
-From there, use `uv run` for the default workflow. It keeps the commands the same on Windows, Linux, and macOS, and avoids shell-specific activation steps in the common path.
+View available app commands and their usage:
 
 ```bash
-uv run app --help
-uv run app example
+# Project Script Usage (Recommended)
+uv run app -h
+uv run app example -h
+
+# Direct Module Execution
+uv run python -m carrnexa.app_name -h
+uv run python -m carrnexa.app_name example -h
 ```
 
-Direct module execution also works:
+## Using a Virtual Environment
+
+If you don't want to prefix every package-related command with `uv run`, you can activate a Python virtual environment instead.
+
+Some common shell environments and their corresponding activation commands are listed below:
+
+| Shell | Activation Command |
+| - | - |
+| Bash/Zsh (Linux/macOS) | `source .venv/bin/activate` |
+| PowerShell | `.\.venv\Scripts\activate.ps1` |
+| Command Prompt | `.\.venv\Scripts\activate.bat` |
+
+Once activated, the quickstart commands simply become:
 
 ```bash
-uv run python -m carrnexa.app_name --help
+app -h
+app example -h
 ```
 
-## Optional: Activate the Virtual Environment
-
-If you prefer to work inside the virtual environment instead of prefixing commands with `uv run`, use the command that matches your shell.
-
-Unix shells:
-
-```bash
-source .venv/bin/activate
-```
-
-Windows PowerShell 7:
-
-```pwsh
-.\.venv\Scripts\Activate.ps1
-```
-
-Once the environment is active, the commands become:
-
-```bash
-app --help
-app example
-```
+> [!NOTE]
+> Any environment-specific commands shown in a document will be prefixed with `uv run` unless stated otherwise. Doing so ensures compatibility across different operating systems and shell environments.
 
 ## Git Hooks
 
-Install `pre-commit`, then copy the tracked post-commit hook into `.git/hooks`:
+This repository uses Git hooks to run a series of checks before code is committed and pushed. If you are contributing to this project, you will need to set up the hooks locally by running the following commands:
 
 ```bash
-pre-commit install
+uv run pre-commit install
 cp hooks/post-commit .git/hooks/post-commit
 ```
 
-## Releases
+## References
 
-The expected release flow uses CI on pull requests and pushes to `main`, then publishes releases from semantic version tags like `v0.3.0`.
+The following documents provide additional information that may be useful when working on this project:
 
-The planned automated checks should cover release metadata validation, Ruff linting, Ruff formatting, and pytest. Release metadata validation makes sure the package version, lockfile version, tag, and changelog notes stay in sync.
+- [Release Process](docs/release-process.md)
+- [Changelog Fragments](docs/changelog-fragments.md)
 
-Normal feature and bugfix pull requests should not bump the package version. User-facing changes should be recorded as small release-note fragments under `changes/`; release preparation later assembles those fragments into `CHANGELOG.md`, bumps the version, and opens a dedicated release-prep pull request.
+## License
 
-For the full release workflow, including release-note fragments, release-prep pull requests, and tag-based publishing, see `docs/release-process.md`.
-
-## Starting a New Project
-
-This template is intentionally close to a real CarrNexa project, so creating a new service or library is mostly a focused rename pass rather than generating a project from scratch.
-
-At minimum, update these places:
-
-- `project.name` in `pyproject.toml`
-- `description` and repository URLs in `pyproject.toml`
-- `tool.uv.build-backend.module-name`
-- `project.scripts`
-- `src/carrnexa/app_name`
-- Imports that still reference `carrnexa.app_name`
-
-The bundled `example` command is only there to verify the CLI wiring before you replace it with project-specific commands.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

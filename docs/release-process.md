@@ -1,110 +1,312 @@
 # Release Process
 
-This template uses a main-plus-tags release flow with release preparation separated from release publication.
+This repository follows a trunk-based development workflow with version-tagged releases. Most changes are integrated into `main` through short-lived topic branches. When a release is ready, a temporary release branch is created to prepare a release candidate, reviewed as a pull request, merged back into `main`, and published from the exact release commit.
 
-## Principles
+## Architecture
 
-- `main` is the integration branch for accepted work, not a promise that every commit is released.
-- Normal feature and bugfix pull requests should not bump the package version.
-- User-facing changes should leave release-note fragments under `changes/` instead of editing `CHANGELOG.md` directly.
-- Release-prep pull requests turn accumulated fragments into versioned release metadata.
-- Manually created semantic version tags publish the exact prepared commit.
+The release workflow consists of four phases:
+
+1. **Development**: Day-to-day work is performed on short-lived topic branches and merged into `main` through pull requests. Depending on the repository and the scope of the change, small maintenance updates may be committed directly to `main`.
+2. **Preparation**: When the changes accumulated on `main` are ready to be released, a temporary versioned release branch is created. This branch is used to perform release-specific tasks such as updating package versions, generating changelog entries, refreshing documentation, and validating the release candidate.
+3. **Review**: The release branch is reviewed as a pull request. This gate verifies the release contents, confirms that the branch still includes the current state of `main`, and either approves the release candidate or sends it back for another preparation pass.
+4. **Publication**: Once the release pull request has been approved and merged back into `main`, the release is published from the exact resulting commit. This typically includes creating a version tag, generating release notes, distributing build artifacts, generating checksums, and optionally publishing packages to configured registries.
+
+The following diagram shows an example release moving through development, preparation, review, and publication.
+
+```mermaid
+---
+config:
+    logLevel: 'debug'
+    themeVariables:
+        'git0': '#c21f1f'
+        'git1': '#1f6fc2'
+        'git2': '#1fc21f'
+        'git3': '#c2c21f'
+    gitGraph:
+        parallelCommits: true
+---
+gitGraph
+    commit id: "Current Release" tag: "v1.5.2" type: HIGHLIGHT
+
+    branch "fix/34-auth-fails-on-azure"
+    checkout "fix/34-auth-fails-on-azure"
+    commit id: "#34: Add failing test"
+    commit id: "#34: Fix auth handling"
+    checkout main
+    merge "fix/34-auth-fails-on-azure" id: "Merge PR #34"
+
+    branch "feature/package-config"
+    checkout "feature/package-config"
+    commit id: "Add configuration option"
+    commit id: "Document behavior"
+    checkout main
+    merge "feature/package-config" id: "Merge PR #35"
+
+    commit id: "Remove trailing space"
+    commit id: "Begin Release Preparation" type: REVERSE
+
+    branch "release/v1.6.0"
+    checkout "release/v1.6.0"
+    commit id: "Bump version"
+    commit id: "Assemble changelog"
+    commit id: "Release candidate ready" type: REVERSE
+    checkout main
+    merge "release/v1.6.0" id: "Release commit" tag: "v1.6.0" type: HIGHLIGHT
+```
 
 ## Workflow
 
-1. Normal feature and bugfix pull requests add code, tests, docs, and any needed release-note fragments under `changes/`.
-2. `main` accumulates accepted changes without requiring a package version bump for every merge.
-3. A release-prep pull request bumps the package version, updates `uv.lock`, assembles the accumulated fragments into `CHANGELOG.md`, and deletes the consumed fragments.
-4. A manually created semantic version tag, such as `v0.3.0`, publishes the release from the prepared `main` commit.
+Follow these phases in order for each release. Development may happen continuously, but preparation, review, and publication should be performed for one release candidate at a time.
 
-The intended automation is for pull requests and pushes to `main` to run CI, and for semantic version tags to run the release workflow. `CHANGELOG.md` is the source for the GitHub release notes.
+### 1. Development
 
-### 1. Normal Pull Requests
+For most user-facing changes, use a topic branch and a pull request.
 
-For normal work, keep the pull request focused on the behavior being changed.
+1. Start from an up-to-date `main` branch.
 
-1. Make the code, test, and documentation changes needed for the work.
-2. Add one or more release-note fragments under `changes/` when the change is user-facing.
-3. Do not update `pyproject.toml` just to bump the package version.
-4. Do not edit `CHANGELOG.md` directly for normal release notes.
-5. Open the pull request against `main` and let CI validate the project when the workflow is available.
+    ```bash
+    git switch main
+    git pull --ff-only
+    git switch -c feature/your-change-name
+    ```
 
-Add a release-note fragment when the change affects users, CLI behavior, package behavior, public APIs, supported configuration, documented workflows, or shipped dependencies. Test-only changes, refactors, formatting, and internal cleanup usually do not need a fragment.
+2. Work iteratively on the branch.
+    - Make changes, updating tests, documentation, configuration, or metadata as needed.
+    - When the changes should appear in the next release notes, add or update fragments under `changes/<change-id>/`. See [Changelog Fragments](changelog-fragments.md) for naming and writing guidance.
+    - Make sure the repository Git hooks are installed so pre-commit runs on each commit, and fix any issues the hooks report.
+    - Run pytest during development as needed.
 
-### 2. Prepare a Release Pull Request
+3. Prepare the pull request.
+    - Before opening the pull request, run the checks that match the scope of the change. For broad changes, run the full local checks:
 
-Release preparation happens in a dedicated release-prep pull request. The prep branch should be temporary, such as `release/v1.3.0`, and should be created from the current `main` branch.
+        ```bash
+        uv run pre-commit run --all-files
+        uv run pytest
+        ```
 
-1. Create a release-prep branch from `main`, such as `release/v0.3.0`.
-2. Bump the version with `uv version 0.3.0`; this updates `pyproject.toml`, re-locks `uv.lock`, and syncs the environment by default.
-3. Move the accumulated `changes/` fragments into a new `CHANGELOG.md` section for the release.
-4. Delete the consumed `changes/` fragments.
-5. Update the changelog comparison links.
-6. Run the local checks: `uv sync --frozen`, `uv run ruff check`, `uv run ruff format --check`, `uv run pytest`, and `uv build`.
-7. Commit the release metadata changes.
-8. Open and merge the release-prep pull request into `main` after CI passes.
+    - Open a pull request targeting `main`.
+    - If the pull request changes during review, rerun the relevant checks before merging.
 
-For now, prepare the release manually. A future manual GitHub Actions workflow may automate these steps by running from trusted workflow code on `main`, creating the release-prep branch, committing the generated files, and opening the pull request.
+4. Merge the pull request once the applicable checks have passed and the review expectations have been satisfied.
 
-### 3. Cut the Release
+> [!IMPORTANT]
+> Avoid updating the package version or editing `CHANGELOG.md` during normal development. These files are updated during release preparation, and modifying them outside that process can create inconsistencies.
 
-Create an annotated tag from the merge commit on `main`, then push it.
+Small maintenance changes can be handled more directly when that fits the repository. For example, fixing a typo in internal documentation may not require the same pull request process as a user-facing behavior change.
+
+### 2. Preparation
+
+> [!NOTE]
+> A manually triggered `prepare-release` workflow is planned to automate this process. Until it is available, perform the following steps manually.
+
+Once the accumulated changes on `main` are ready for release, begin the release-preparation process.
+
+1. Choose the next version using Semantic Versioning.
+    - **Patch** for backward-compatible bug fixes and small documentation-only release updates.
+    - **Minor** for backward-compatible features or meaningful behavior improvements.
+    - **Major** for breaking changes that require users or maintainers to adjust how they use the project.
+
+2. Create a release branch from `main`.
+
+    ```bash
+    git switch main
+    git pull --ff-only
+    git fetch origin --tags
+    git switch -c release/vX.Y.Z
+    ```
+
+3. Update the package version with `uv version` as this will modify the version in `pyproject.toml` and keep `uv.lock` in sync. Use either an explicit version or a Semantic Versioning bump.
+
+    ```bash
+    uv version 1.6.0
+    uv version --bump minor
+    ```
+
+4. Compile the fragments under `changes/` into a new version section in `CHANGELOG.md`.
+
+5. Remove the processed fragment files and directories from `changes/`.
+
+6. Run the release-validation checks.
+
+    ```bash
+    uv run pre-commit run --all-files
+    uv run pytest
+    ```
+
+7. Commit the release-preparation updates.
+
+    ```bash
+    git add pyproject.toml uv.lock CHANGELOG.md changes
+    git commit -m "Prepare release vX.Y.Z"
+    ```
+
+8. Push the release branch.
+
+    ```bash
+    git push -u origin release/vX.Y.Z
+    ```
+
+9. Open a release pull request targeting `main`.
+
+### 3. Review
+
+The release pull request is the final approval gate before publication. Use it to verify that the release candidate is complete, current, and ready to become the published version.
+
+#### Release Contents
+
+Check the pull request for:
+
+- The expected package version in `pyproject.toml`.
+- The corresponding version update in `uv.lock`, with no unrelated lockfile changes.
+- A correctly generated `CHANGELOG.md` section and appropriate comparison links.
+- Accurate grouping and wording of changelog entries.
+- Clear migration guidance for any breaking changes.
+- Removal of only the fragments included in the current release.
+- Successful CI runs and release-validation checks.
+
+#### Freshness Check
+
+Before approving the release, verify that the release branch still contains the current state of `main`. This can often be checked directly from the pull request view. If that status is unclear or a local review is preferred, switch to the release branch and use the following command to count commits that are on `origin/main` but not on the release branch.
 
 ```bash
-git checkout main
-git pull
-git tag -a v0.3.0 -m "v0.3.0"
-git push origin v0.3.0
+git fetch origin
+git rev-list --count HEAD..origin/main
 ```
 
-The planned release workflow should rerun linting and tests, build the package, extract the matching version notes from `CHANGELOG.md`, create or update the GitHub release, and upload the contents of `dist/`.
+A result of `0` here indicates that the release branch contains the current `main`. A positive result means the release branch is behind `main` by that many commits.
 
-## Release-Note Fragments
+#### Candidate Updates
 
-Release-note fragments are intentionally small. Use a separate fragment when one pull request contains changes that belong in different changelog categories.
+If `main` has advanced, do not approve the stale release candidate. Either close the release pull request and prepare a new candidate later, or update the release branch so it includes the new commits from `main`.
 
-Suggested fragment names:
-
-```text
-changes/123.added.md
-changes/124.changed.md
-changes/125.fixed.md
-changes/126.removed.md
-```
-
-Use the filename pattern `changes/<id-or-slug>.<category>.md`. Prefer issue or pull request numbers when they are available. Use a short slug when the work has no stable tracking number. Use one of these categories:
-
-- `added`
-- `changed`
-- `deprecated`
-- `removed`
-- `fixed`
-- `security`
-
-Avoid commit hashes because they are hard to create by hand, change during rebases and amendments, and tie release notes to implementation history instead of the user-facing change.
-
-A future helper script may create fragments and enforce this convention:
+To update the existing release branch from a local checkout, run:
 
 ```bash
-uv run python scripts/add_change.py fixed "Fix config loading when the file is missing"
+git fetch origin
+git switch release/vX.Y.Z
+git merge origin/main
+git push
 ```
 
-The helper should create `changes/` when needed, validate the category, detect an issue number from the current branch when possible, fall back to a safe slug, avoid overwriting existing fragments, and write a properly formatted bullet.
+After any update to the release branch, whether from incorporating `main` or applying release-specific review feedback, reassess the version selection, regenerate any affected changelog or documentation content, rerun the release-validation checks, and review the updated candidate again.
 
-## Guardrails
+If the release should not proceed, close the pull request and delete the `release/vX.Y.Z` branch without creating the version tag.
 
-### Automation Boundaries
+#### Approval
 
-- Version bumps, changelog assembly, and tag creation stay out of normal feature and bugfix pull requests.
-- A future prepare-release workflow may automate the release-prep branch and pull request, but it should not create tags or publish releases.
-- The planned release workflow should remain tag-driven so publishing requires an explicit human decision about the exact commit to release.
+Once the release candidate is current, approved, and passing required checks, merge the pull request into `main`. The commit that lands on `main` becomes the release commit used during publication, so record its SHA before moving on.
 
-### Validation Responsibilities
+### 4. Publication
 
-Each workflow validates a different stage of the release path.
+> [!NOTE]
+> A `publish-release` workflow is planned to automate this process after the release pull request is merged. Until it is available, perform the following steps manually.
 
-- CI should validate general project health on pull requests and pushes to `main`. It should run release metadata validation, Ruff linting, Ruff formatting checks, and pytest's default test discovery.
-- Release-prep validation checks that the planned version is ready before the release-prep pull request is merged. It should verify that `pyproject.toml`, `uv.lock`, `CHANGELOG.md`, and the target tag version all agree, and that the versioned changelog notes are present.
-- The tag-triggered release workflow should validate the exact commit being published. It should rerun the release metadata checks with the pushed tag, rerun linting and tests, build the distributions, extract the matching changelog notes, and publish the GitHub release assets.
+After the approved release pull request has been merged, the next step is to publish the release from the recorded release commit. The sections below verify that commit, tag it explicitly, build artifacts from the tag, and publish the release outputs.
 
-The release workflow should intentionally fail when versioned changelog notes are missing. Do not create empty notes during the release job; prepare them before tagging so the published release has meaningful content.
+#### Release Commit
+
+The release commit is the boundary between review and publication. Before creating a tag or building artifacts, inspect the recorded commit and confirm that it contains the approved release-preparation updates for the intended version.
+
+```bash
+git fetch origin --tags
+git show --stat --oneline <release-commit-sha>
+```
+
+The commit must also be reachable from `origin/main`, which confirms that the release pull request was merged before publication begins.
+
+```bash
+git merge-base --is-ancestor <release-commit-sha> origin/main
+```
+
+A zero exit code confirms the check passed. If the command fails, stop and verify that the pull request was merged as expected before publishing.
+
+#### Version Tag
+
+The version tag identifies the immutable source revision for the release. Create an annotated tag that points directly at the recorded release commit, then push the tag to the remote repository.
+
+```bash
+git tag -a vX.Y.Z <release-commit-sha> -m "Release vX.Y.Z"
+git push origin vX.Y.Z
+```
+
+Specifying the commit explicitly prevents changes merged into `main` after the release pull request from being included in the release. After pushing the tag, check it out before building artifacts.
+
+```bash
+git checkout --detach vX.Y.Z
+```
+
+Building from the checked-out tag ensures that the source tree used to produce the artifacts exactly matches the source tree identified by the published version.
+
+#### Release Artifacts
+
+Build artifacts only after checking out the version tag. This keeps the source distribution, wheel, and checksums tied to the same source revision that users see in the published release.
+
+```bash
+uv build
+```
+
+The build should produce both a source distribution and a wheel under `dist/`. After the artifacts are present, generate SHA-256 checksums for them.
+
+On Linux:
+
+```bash
+(
+    cd dist
+    sha256sum -- *.whl *.tar.gz > SHA256SUMS
+)
+```
+
+On Windows with PowerShell 7:
+
+```powershell
+Get-ChildItem dist -File |
+    Where-Object { $_.Name -ne "SHA256SUMS" } |
+    Sort-Object Name |
+    Get-FileHash -Algorithm SHA256 |
+    ForEach-Object {
+        "{0} *{1}" -f $_.Hash.ToLowerInvariant(), (Split-Path $_.Path -Leaf)
+    } |
+    Set-Content -Encoding UTF8 -Path dist/SHA256SUMS
+```
+
+#### GitHub Release
+
+Create a GitHub Release for the version tag using the corresponding `CHANGELOG.md` section as the source for the release notes. Attach the source distribution, wheel, and `SHA256SUMS` file so the release page contains both the generated source archives and the built Python artifacts.
+
+Before publishing the GitHub Release, confirm that the automatically generated source archives reference the expected version tag.
+
+When the release workflow is automated, generate the GitHub Release notes from `CHANGELOG.md` instead of maintaining separate release-note text by hand.
+
+#### Package Publication
+
+If the package is distributed through a package index, publish the release artifacts to the configured target, such as PyPI or a private package registry.
+
+> [!TIP]
+> For PyPI publication, use Trusted Publishing after the project and repository have been configured for it. Trusted Publishing uses short-lived OpenID Connect credentials instead of requiring a long-lived PyPI API token.
+
+#### Verification and Cleanup
+
+After publication, verify the published release before deleting the temporary release branch.
+
+- Confirm that the version tag references the intended release commit on `main`.
+- Confirm that the GitHub Release contains the expected release notes and artifacts.
+- Confirm that the published checksums match the attached artifacts.
+- If applicable, confirm that the expected package version is available from the configured package index.
+
+Delete the temporary release branch if it was not removed automatically after the pull request was merged.
+
+```bash
+git push origin --delete release/vX.Y.Z
+git branch -d release/vX.Y.Z
+```
+
+If the pull request was squash-merged or rebased, Git may not recognize the local release branch as merged. After verifying that the release was published successfully, delete the local branch explicitly if needed.
+
+```bash
+git branch -D release/vX.Y.Z
+```
+
+> [!IMPORTANT]
+> Once a GitHub Release or package has been published, do not move, recreate, or force-update its version tag. If a problem is discovered after publication, correct it through the normal development process and publish a new version.
+
+The automated publication workflow should preserve the same boundary: it should publish from the merge commit or pushed version tag associated with the approved release pull request, not from whatever commit happens to be at the tip of `main` when the workflow runs.
