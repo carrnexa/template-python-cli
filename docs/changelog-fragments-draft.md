@@ -19,15 +19,15 @@ changes/<issue_or_pr_id>.<category>.md
 
 ### Allowed Categories
 
-| Suffix           | Category Heading | Purpose                                                                           |
+| Suffix | Category Heading | Purpose |
 | :--------------- | :--------------- | :-------------------------------------------------------------------------------- |
-| `.breaking.md`   | Breaking Changes | Incompatible API, CLI flag, or configuration modifications.                       |
-| `.added.md`      | Added            | New user-facing features or CLI commands.                                         |
-| `.changed.md`    | Changed          | Modifications to existing functionality without breaking backwards compatibility. |
-| `.deprecated.md` | Deprecated       | Features or flags that will be removed in future versions.                        |
-| `.removed.md`    | Removed          | Features or flags that have been eliminated.                                      |
-| `.fixed.md`      | Fixed            | Bug fixes and defect corrections.                                                 |
-| `.security.md`   | Security         | Vulnerability remediation and security updates.                                   |
+| `.breaking.md` | Breaking Changes | Incompatible API, CLI flag, or configuration modifications. |
+| `.added.md` | Added | New user-facing features or CLI commands. |
+| `.changed.md` | Changed | Modifications to existing functionality without breaking backwards compatibility. |
+| `.deprecated.md` | Deprecated | Features or flags that will be removed in future versions. |
+| `.removed.md` | Removed | Features or flags that have been eliminated. |
+| `.fixed.md` | Fixed | Bug fixes and defect corrections. |
+| `.security.md` | Security | Vulnerability remediation and security updates. |
 
 ## Writing Fragment Content
 
