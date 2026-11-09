@@ -39,16 +39,10 @@
     // Plain Text
     "LICENSE*": "txt",
 
-    // Markdown
+    // Markdown (overrides Copilot's instructions/prompt/agent/skill modes so markdownlint applies)
     "*.md": "markdown",
 
-    // YAML
-    "*.yaml": "yaml",
-    "*.yml": "yaml",
-
-    // JSON and JSONC
-    "*.json": "json",
-    "*.jsonc": "jsonc",
+    // JSONC
     "*.manifest": "jsonc",
     "*.webmanifest": "jsonc",
     "*.code-snippets": "jsonc"
