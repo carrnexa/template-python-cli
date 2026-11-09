@@ -9,7 +9,6 @@
 
   /* Formatting */
   "editor.formatOnSave": true,
-  "editor.tabSize": 4,
 
   /* Python */
   "python.testing.pytestEnabled": true,
