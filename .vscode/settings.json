@@ -16,7 +16,7 @@
   "python.analysis.typeCheckingMode": "standard",
 
   // Ruff
-  "ruff.lineLength": 100,
+  "ruff.configurationPreference": "filesystemFirst",
 
   /* Even Better TOML */
   "evenBetterToml.formatter.allowedBlankLines": 1,
