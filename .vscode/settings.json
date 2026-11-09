@@ -12,7 +12,6 @@
 
   /* Python */
   "python.testing.pytestEnabled": true,
-  "python.analysis.typeCheckingMode": "standard",
 
   // Ruff
   "ruff.configurationPreference": "filesystemFirst",
