@@ -11,6 +11,7 @@ The following software is required to use this repository:
 | [Python](https://www.python.org/downloads/) | 3.12.10 | |
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.11.24 | |
 | [Git](https://git-scm.com/install/) | 2.55.0 | Only needed if cloning or contributing |
+| [Git LFS](https://git-lfs.com) | 3.7.1 | Only needed if cloning or contributing |
 | [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6) | 7.6.4 | For Windows users only |
 
 > [!NOTE]
@@ -115,11 +116,11 @@ app example -h
 
 ## Git Hooks
 
-This repository uses Git hooks to run a series of checks before code is committed and pushed. If you are contributing to this project, you will need to set up the hooks locally by running the following commands:
+This repository uses Git hooks to run a series of checks before code is committed and to prefix commit messages with the issue reference from the branch name (e.g. `GH-123:` or `ABC-123:`). Binary and data files are stored with Git LFS (see [.gitattributes](.gitattributes)), and files over 500 KB that are not tracked by LFS are rejected at commit time. If you are contributing to this project, set up Git LFS and the hooks locally by running the following commands:
 
 ```bash
+git lfs install
 uv run pre-commit install
-cp hooks/post-commit .git/hooks/post-commit
 ```
 
 ## References
