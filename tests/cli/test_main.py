@@ -7,7 +7,7 @@ from carrnexa.app_name.cli.main import app
 
 HELP_OUTPUT_FRAGMENTS = (
     "Usage:",
-    "A Python CLI built at CarrNexa",
+    "A CarrNexa Python CLI.",
     "example",
 )
 
