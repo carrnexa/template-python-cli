@@ -3,7 +3,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    ("branch", "expected"),
+    ("branch_name", "expected_issue_reference"),
     [
         ("feature/34-add-v2-api", "34"),
         ("34-quick-fix", "34"),
@@ -18,5 +18,6 @@ import pytest
         ("dependabot/pip/ruff-0.15.21", None),
     ],
 )
-def test_issue_ref(branch: str, expected: str | None) -> None:
-    assert prepare_commit_msg._get_issue_ref(branch) == expected
+def test_extract_issue_reference(branch_name: str, expected_issue_reference: str | None) -> None:
+    issue_reference = prepare_commit_msg.extract_issue_reference(branch_name)
+    assert issue_reference == expected_issue_reference

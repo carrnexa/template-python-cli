@@ -10,37 +10,54 @@ from pathlib import Path
 ISSUE_REF = re.compile(r"(?:^|/)([A-Z]{2,}-[0-9]+|[0-9]+)(?=-|$)")
 
 
-def _get_issue_ref(branch: str) -> str | None:
-    match = ISSUE_REF.search(branch)
+def extract_issue_reference(branch_name: str) -> str | None:
+    """Search for an issue reference in the branch name and return it if found.
+
+    Args:
+        branch_name (str): The name of the current branch.
+
+    Returns:
+        str | None: The issue reference if found, otherwise None.
+    """
+    match = ISSUE_REF.search(branch_name)
     if match is None:
         return None
     return match.group(1)
 
 
 def main() -> int:
+    # Skip commit message modification for merge or squash commits
     if os.environ.get("PRE_COMMIT_COMMIT_MSG_SOURCE") in {"merge", "squash"}:
         return 0
 
-    branch = subprocess.run(
+    branch_name = subprocess.run(
         ["git", "symbolic-ref", "--short", "-q", "HEAD"],  # noqa: S607
         capture_output=True,
         text=True,
         check=False,
     ).stdout.strip()
-    ref = _get_issue_ref(branch)
-    if ref is None:
+
+    issue_reference = extract_issue_reference(branch_name)
+    if issue_reference is None:
         return 0
 
-    # Use "GH-123" instead of "#123" because git strips lines starting with "#" from editor messages
-    prefix = f"GH-{ref}: " if ref.isdigit() else f"{ref}: "
+    # Prefix a raw number (GitHub format) with "GH-" instead of "#" since git can strip those lines
+    if issue_reference.isdigit():
+        issue_reference = f"GH-{issue_reference}"
+    commit_message_prefix = f"{issue_reference}: ".encode()
 
     msg_file = Path(sys.argv[1])
-    message = msg_file.read_bytes()
-    if not message.startswith(prefix.encode()):
-        msg_file.write_bytes(prefix.encode() + message)
+    commit_message = msg_file.read_bytes()
+    if not commit_message.startswith(commit_message_prefix):
+        msg_file.write_bytes(commit_message_prefix + commit_message)
 
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+__all__ = [
+    "extract_issue_reference",
+]
