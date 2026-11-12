@@ -6,8 +6,15 @@ import subprocess
 import sys
 from pathlib import Path
 
-# JIRA key (ABC-123) or GitHub issue number (123)
-ISSUE_REF = re.compile(r"[A-Z]{2,}-[0-9]+|[0-9]+")
+# JIRA key (ABC-123) or GitHub issue number (123) at the start of a branch segment
+ISSUE_REF = re.compile(r"(?:^|/)([A-Z]{2,}-[0-9]+|[0-9]+)(?=-|$)")
+
+
+def _get_issue_ref(branch: str) -> str | None:
+    match = ISSUE_REF.search(branch)
+    if match is None:
+        return None
+    return match.group(1)
 
 
 def main() -> int:
@@ -20,11 +27,9 @@ def main() -> int:
         text=True,
         check=False,
     ).stdout.strip()
-    match = ISSUE_REF.search(branch)
-    if not match:
+    ref = _get_issue_ref(branch)
+    if ref is None:
         return 0
-
-    ref = match.group()
 
     # Use "GH-123" instead of "#123" because git strips lines starting with "#" from editor messages
     prefix = f"GH-{ref}: " if ref.isdigit() else f"{ref}: "
