@@ -81,10 +81,11 @@ python_functions = ["test_*"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 addopts = [
-    "-ra",              # Show extra test summary info
-    "--tb=short",       # Concise tracebacks
-    "--strict-markers", # Error on undefined markers
-    "--strict-config",  # Error on config issues
+    "-ra",                     # Show extra test summary info
+    "--tb=short",              # Concise tracebacks
+    "--strict-markers",        # Error on undefined markers
+    "--strict-config",         # Error on config issues
+    "--import-mode=importlib", # Import tests by path so file names can repeat across directories
 ]
 markers = [
     "smoke: Critical path tests that must pass (fast, run first)",
