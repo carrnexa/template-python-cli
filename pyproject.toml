@@ -70,9 +70,11 @@ docstring-code-line-length = 100
 
 [tool.pyright]
 typeCheckingMode = "standard"
+extraPaths = ["hooks"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["hooks"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
